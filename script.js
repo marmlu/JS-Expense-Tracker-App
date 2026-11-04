@@ -32,7 +32,38 @@ transactionForm.addEventListener("submit", function (event) {
       category: storedCategory,
     });
 
+    const transactionIncomeArray = transactionArray.filter(
+      function (transaction) {
+        return transaction.type === "income";
+      },
+    );
+    const transactionExpenseArray = transactionArray.filter(
+      function (transaction) {
+        return transaction.type === "expense";
+      },
+    );
+
+    const totalIncomeAmount = transactionIncomeArray.reduce(function (
+      sum,
+      transaction,
+    ) {
+      return sum + transaction.amount;
+    }, 0);
+    totalIncome.textContent = totalIncomeAmount;
+
+    const totalExpenseAmount = transactionExpenseArray.reduce(function (
+      sum,
+      transaction,
+    ) {
+      return sum + transaction.amount;
+    }, 0);
+    totalExpenses.textContent = totalExpenseAmount;
+
+    console.log(transactionIncomeArray);
+    console.log(transactionExpenseArray);
+
     console.log(transactionArray);
+
     transactionForm.reset();
   }
 });
