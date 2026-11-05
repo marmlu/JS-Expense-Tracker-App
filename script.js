@@ -58,7 +58,20 @@ transactionForm.addEventListener("submit", function (event) {
       return sum + transaction.amount;
     }, 0);
     totalExpenses.textContent = totalExpenseAmount;
-
+    if (transactionArray.length === 0) {
+      emptyMessage.style.display = "block";
+    } else {
+      emptyMessage.style.display = "none";
+    }
+    transactionList.innerHTML = "";
+    transactionArray.forEach(function (transaction) {
+      const list = document.createElement("p");
+      list.classList.add("transaction-list");
+      list.classList.add("transaction-history-card");
+      list.textContent = ` Description: ${transaction.description}\nAmount: ${transaction.amount}\nTransaction type: ${transaction.type}\nCategory: ${transaction.category}`;
+      transactionList.classList.add("transaction-list");
+      transactionList.appendChild(list);
+    });
     console.log(transactionIncomeArray);
     console.log(transactionExpenseArray);
 
