@@ -31,37 +31,8 @@ transactionForm.addEventListener("submit", function (event) {
       type: storedType,
       category: storedCategory,
     });
-
-    const transactionIncomeArray = transactionArray.filter(
-      function (transaction) {
-        return transaction.type === "income";
-      },
-    );
-    const transactionExpenseArray = transactionArray.filter(
-      function (transaction) {
-        return transaction.type === "expense";
-      },
-    );
-
-    const totalIncomeAmount = transactionIncomeArray.reduce(function (
-      sum,
-      transaction,
-    ) {
-      return sum + transaction.amount;
-    }, 0);
-    totalIncome.textContent = totalIncomeAmount;
-
-    const totalExpenseAmount = transactionExpenseArray.reduce(function (
-      sum,
-      transaction,
-    ) {
-      return sum + transaction.amount;
-    }, 0);
-    totalExpenses.textContent = totalExpenseAmount;
-
+    updateSummary();
     displayTransaction();
-    console.log(transactionIncomeArray);
-    console.log(transactionExpenseArray);
 
     console.log(transactionArray);
 
@@ -84,4 +55,36 @@ function displayTransaction() {
     transactionList.classList.add("transaction-list");
     transactionList.appendChild(list);
   });
+}
+
+function updateSummary() {
+  const transactionIncomeArray = transactionArray.filter(
+    function (transaction) {
+      return transaction.type === "income";
+    },
+  );
+  const transactionExpenseArray = transactionArray.filter(
+    function (transaction) {
+      return transaction.type === "expense";
+    },
+  );
+
+  const totalIncomeAmount = transactionIncomeArray.reduce(function (
+    sum,
+    transaction,
+  ) {
+    return sum + transaction.amount;
+  }, 0);
+  totalIncome.textContent = totalIncomeAmount;
+
+  const totalExpenseAmount = transactionExpenseArray.reduce(function (
+    sum,
+    transaction,
+  ) {
+    return sum + transaction.amount;
+  }, 0);
+  totalExpenses.textContent = totalExpenseAmount;
+  totalBalance.textContent = totalIncomeAmount - totalExpenseAmount;
+  console.log(transactionIncomeArray);
+  console.log(transactionExpenseArray);
 }
