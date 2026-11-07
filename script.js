@@ -9,8 +9,8 @@ const category = document.getElementById("category");
 const transactionList = document.getElementById("transaction-list");
 const emptyMessage = document.getElementById("empty-message");
 const clearAllButton = document.getElementById("clear-history-btn");
-
-const transactionArray = [];
+const savedTransaction = JSON.parse(localStorage.getItem("transactions"));
+const transactionArray = savedTransaction || [];
 transactionForm.addEventListener("submit", function (event) {
   event.preventDefault();
   const storedDescription = descriptionInput.value.trim();
@@ -33,7 +33,6 @@ transactionForm.addEventListener("submit", function (event) {
     });
     updateSummary();
     displayTransaction();
-
     console.log(transactionArray);
 
     transactionForm.reset();
@@ -87,4 +86,5 @@ function updateSummary() {
   totalBalance.textContent = totalIncomeAmount - totalExpenseAmount;
   console.log(transactionIncomeArray);
   console.log(transactionExpenseArray);
+  localStorage.setItem("transactions", JSON.stringify(transactionArray));
 }
