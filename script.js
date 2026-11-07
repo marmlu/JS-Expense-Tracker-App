@@ -39,6 +39,7 @@ transactionForm.addEventListener("submit", function (event) {
   }
 });
 displayTransaction();
+updateSummary();
 function displayTransaction() {
   if (transactionArray.length === 0) {
     emptyMessage.style.display = "block";
