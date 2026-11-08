@@ -30,6 +30,7 @@ transactionForm.addEventListener("submit", function (event) {
       amount: Number(storedAmount),
       type: storedType,
       category: storedCategory,
+      id: Date.now(),
     });
     updateSummary();
     displayTransaction();
@@ -48,10 +49,28 @@ function displayTransaction() {
   }
   transactionList.innerHTML = "";
   transactionArray.forEach(function (transaction) {
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "Delete";
+    delBtn.dataset.id = transaction.id;
+    delBtn.addEventListener("click", function (event) {
+      const eventTarget = Number(event.target.dataset.id);
+      const targetIndex = transactionArray.findIndex(function (target) {
+        return target.id === eventTarget;
+      });
+      if (targetIndex === -1) {
+        return;
+      }
+      transactionArray.splice(targetIndex, 1);
+
+      displayTransaction();
+      updateSummary();
+    });
+
     const list = document.createElement("p");
     list.classList.add("transaction-list");
     list.classList.add("transaction-history-card");
-    list.textContent = ` Description: ${transaction.description}\nAmount: ${transaction.amount}\nTransaction type: ${transaction.type}\nCategory: ${transaction.category}`;
+    list.textContent = ` Description: ${transaction.description}\nAmount: ${transaction.amount}\nTransaction type: ${transaction.type}\nCategory: ${transaction.category} \nId: ${transaction.id}`;
+    list.appendChild(delBtn);
     transactionList.classList.add("transaction-list");
     transactionList.appendChild(list);
   });
