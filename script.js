@@ -35,6 +35,7 @@ transactionForm.addEventListener("submit", function (event) {
   }
 
   if (editingTransactionId !== null) {
+    console.log("Editing ID:", editingTransactionId);
     const targetEditIndex = transactionArray.findIndex(function (target) {
       return target.id === editingTransactionId;
     });
@@ -97,6 +98,10 @@ function displayTransaction() {
       }
 
       transactionArray.splice(targetDelIndex, 1);
+      if (editingTransactionId === targetDelIndex) {
+        editingTransactionId = null;
+        transactionForm.reset();
+      }
 
       updateSummary();
       displayTransaction();
