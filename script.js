@@ -2,6 +2,7 @@ const totalBalance = document.getElementById("total-balance");
 const totalIncome = document.getElementById("total-income");
 const totalExpenses = document.getElementById("total-expenses");
 const transactionForm = document.getElementById("transaction-form");
+const addTransactionBtn = document.getElementById("add-transaction-btn");
 const descriptionInput = document.getElementById("description");
 const amountInput = document.getElementById("amount");
 const transactionType = document.getElementById("type");
@@ -23,6 +24,7 @@ transactionForm.addEventListener("submit", function (event) {
   const storedAmount = amountInput.value.trim();
   const storedType = transactionType.value.trim();
   const storedCategory = category.value.trim();
+  const numericAmount = Number(numericAmount);
 
   if (
     storedDescription === "" ||
@@ -31,6 +33,11 @@ transactionForm.addEventListener("submit", function (event) {
     storedCategory === ""
   ) {
     alert("Please fill the form");
+    return;
+  }
+
+  if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
+    alert("Please enter a valid amount greater than zero.");
     return;
   }
 
@@ -47,7 +54,7 @@ transactionForm.addEventListener("submit", function (event) {
     const transaction = transactionArray[targetEditIndex];
 
     transaction.description = storedDescription;
-    transaction.amount = Number(storedAmount);
+    transaction.amount = Number(numericAmount);
     transaction.type = storedType;
     transaction.category = storedCategory;
 
@@ -55,13 +62,13 @@ transactionForm.addEventListener("submit", function (event) {
   } else {
     transactionArray.push({
       description: storedDescription,
-      amount: Number(storedAmount),
+      amount: Number(numericAmount),
       type: storedType,
       category: storedCategory,
       id: Date.now(),
     });
   }
-
+  addTransactionBtn.textContent = "Add Transaction";
   updateSummary();
   displayTransaction();
   transactionForm.reset();
@@ -98,7 +105,7 @@ function displayTransaction() {
       }
 
       transactionArray.splice(targetDelIndex, 1);
-      if (editingTransactionId === targetDelIndex) {
+      if (editingTransactionId === eventDelTarget) {
         editingTransactionId = null;
         transactionForm.reset();
       }
@@ -130,6 +137,7 @@ function displayTransaction() {
       amountInput.value = editTransaction.amount;
       transactionType.value = editTransaction.type;
       category.value = editTransaction.category;
+      addTransactionBtn.textContent = "Edit Transaction";
     });
 
     // Transaction history
@@ -202,4 +210,5 @@ clearAllButton.addEventListener("click", function () {
     updateSummary();
     displayTransaction();
   }
+  addTransactionBtn.textContent = "Add Transaction";
 });
