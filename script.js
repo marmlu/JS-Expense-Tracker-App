@@ -10,6 +10,7 @@ const category = document.getElementById("category");
 const transactionList = document.getElementById("transaction-list");
 const emptyMessage = document.getElementById("empty-message");
 const clearAllButton = document.getElementById("clear-history-btn");
+const transactionFilter = document.getElementById("transaction-filter");
 
 const savedTransaction = JSON.parse(localStorage.getItem("transactions"));
 const transactionArray = savedTransaction || [];
@@ -24,7 +25,7 @@ transactionForm.addEventListener("submit", function (event) {
   const storedAmount = amountInput.value.trim();
   const storedType = transactionType.value.trim();
   const storedCategory = category.value.trim();
-  const numericAmount = Number(numericAmount);
+  const numericAmount = Number(storedAmount);
 
   if (
     storedDescription === "" ||
@@ -70,16 +71,16 @@ transactionForm.addEventListener("submit", function (event) {
   }
   addTransactionBtn.textContent = "Add Transaction";
   updateSummary();
-  displayTransaction();
+  transactionFilter.dispatchEvent(new Event("change"));
   transactionForm.reset();
 });
 
-displayTransaction();
+displayTransaction(transactionArray);
 updateSummary();
 
 // Display transactions
-function displayTransaction() {
-  if (transactionArray.length === 0) {
+function displayTransaction(transactionArr = transactionArray) {
+  if (transactionArr.length === 0) {
     emptyMessage.style.display = "block";
   } else {
     emptyMessage.style.display = "none";
@@ -87,7 +88,7 @@ function displayTransaction() {
 
   transactionList.innerHTML = "";
 
-  transactionArray.forEach(function (transaction) {
+  transactionArr.forEach(function (transaction) {
     // Delete button
     const delBtn = document.createElement("button");
     delBtn.textContent = "Delete";
@@ -108,10 +109,10 @@ function displayTransaction() {
       if (editingTransactionId === eventDelTarget) {
         editingTransactionId = null;
         transactionForm.reset();
+        addTransactionBtn.textContent = "Add Transaction";
       }
-
       updateSummary();
-      displayTransaction();
+      transactionFilter.dispatchEvent(new Event("change"));
     });
 
     // Edit button
@@ -128,6 +129,7 @@ function displayTransaction() {
 
       if (targetEditIndex === -1) {
         editingTransactionId = null;
+        addTransactionBtn.textContent = "Add Transaction";
         return;
       }
 
@@ -208,7 +210,23 @@ clearAllButton.addEventListener("click", function () {
     transactionForm.reset();
 
     updateSummary();
-    displayTransaction();
+    displayTransaction(transactionArray);
   }
   addTransactionBtn.textContent = "Add Transaction";
+});
+
+transactionFilter.addEventListener("change", function () {
+  if (transactionFilter.value === "all") {
+    displayTransaction(transactionArray);
+  } else if (transactionFilter.value === "income") {
+    const incomeTransaction = transactionArray.filter(function (transaction) {
+      return transaction.type === "income";
+    });
+    displayTransaction(incomeTransaction);
+  } else {
+    const expenseTransaction = transactionArray.filter(function (transaction) {
+      return transaction.type === "expense";
+    });
+    displayTransaction(expenseTransaction);
+  }
 });
