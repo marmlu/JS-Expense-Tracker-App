@@ -11,6 +11,7 @@ const transactionList = document.getElementById("transaction-list");
 const emptyMessage = document.getElementById("empty-message");
 const clearAllButton = document.getElementById("clear-history-btn");
 const transactionFilter = document.getElementById("transaction-filter");
+const searchTransactions = document.getElementById("search-transactions");
 
 const savedTransaction = JSON.parse(localStorage.getItem("transactions"));
 const transactionArray = savedTransaction || [];
@@ -55,7 +56,7 @@ transactionForm.addEventListener("submit", function (event) {
     const transaction = transactionArray[targetEditIndex];
 
     transaction.description = storedDescription;
-    transaction.amount = Number(numericAmount);
+    transaction.amount = numericAmount;
     transaction.type = storedType;
     transaction.category = storedCategory;
 
@@ -63,7 +64,7 @@ transactionForm.addEventListener("submit", function (event) {
   } else {
     transactionArray.push({
       description: storedDescription,
-      amount: Number(numericAmount),
+      amount: numericAmount,
       type: storedType,
       category: storedCategory,
       id: Date.now(),
@@ -229,4 +230,22 @@ transactionFilter.addEventListener("change", function () {
     });
     displayTransaction(expenseTransaction);
   }
+});
+
+searchTransactions.addEventListener("input", function () {
+  const searchInput = searchTransactions.value.toLowerCase();
+  const searchedTransactions = transactionArray.filter(function (transaction) {
+    if (
+      (transactionFilter.value.toLowerCase() === "all" ||
+        transactionFilter.value.toLowerCase() ===
+          transaction.type.toLowerCase()) &&
+      (transaction.description.toLowerCase().includes(searchInput) ||
+        transaction.category.toLowerCase().includes(searchInput) ||
+        transaction.amount.toString().includes(searchInput))
+    ) {
+      return true;
+    }
+  });
+
+  displayTransaction(searchedTransactions);
 });
