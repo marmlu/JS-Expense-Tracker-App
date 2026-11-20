@@ -215,24 +215,7 @@ clearAllButton.addEventListener("click", function () {
   }
   addTransactionBtn.textContent = "Add Transaction";
 });
-
-transactionFilter.addEventListener("change", function () {
-  if (transactionFilter.value === "all") {
-    displayTransaction(transactionArray);
-  } else if (transactionFilter.value === "income") {
-    const incomeTransaction = transactionArray.filter(function (transaction) {
-      return transaction.type === "income";
-    });
-    displayTransaction(incomeTransaction);
-  } else {
-    const expenseTransaction = transactionArray.filter(function (transaction) {
-      return transaction.type === "expense";
-    });
-    displayTransaction(expenseTransaction);
-  }
-});
-
-searchTransactions.addEventListener("input", function () {
+function filterTransactions() {
   const searchInput = searchTransactions.value.toLowerCase();
   const searchedTransactions = transactionArray.filter(function (transaction) {
     if (
@@ -246,6 +229,8 @@ searchTransactions.addEventListener("input", function () {
       return true;
     }
   });
-
   displayTransaction(searchedTransactions);
-});
+}
+transactionFilter.addEventListener("change", filterTransactions);
+
+searchTransactions.addEventListener("input", filterTransactions);
