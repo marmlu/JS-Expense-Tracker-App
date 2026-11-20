@@ -12,6 +12,7 @@ const emptyMessage = document.getElementById("empty-message");
 const clearAllButton = document.getElementById("clear-history-btn");
 const transactionFilter = document.getElementById("transaction-filter");
 const searchTransactions = document.getElementById("search-transactions");
+const sortTransactionsSelect = document.getElementById("sort-transactions");
 
 const savedTransaction = JSON.parse(localStorage.getItem("transactions"));
 const transactionArray = savedTransaction || [];
@@ -234,3 +235,18 @@ function filterTransactions() {
 transactionFilter.addEventListener("change", filterTransactions);
 
 searchTransactions.addEventListener("input", filterTransactions);
+
+function sortTransactions() {
+  const sortedTransactions = [...transactionArray];
+  if (sortTransactionsSelect.value === "lowest") {
+    sortedTransactions.sort(function (a, b) {
+      return a.amount - b.amount;
+    });
+  } else if (sortTransactionsSelect.value === "highest") {
+    sortedTransactions.sort(function (a, b) {
+      return b.amount - a.amount;
+    });
+  }
+  displayTransaction(sortedTransactions);
+}
+sortTransactionsSelect.addEventListener("change", sortTransactions);
