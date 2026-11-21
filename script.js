@@ -246,6 +246,14 @@ function sortTransactions() {
     sortedTransactions.sort(function (a, b) {
       return b.amount - a.amount;
     });
+  } else if (sortTransactionsSelect.value === "newest") {
+    sortedTransactions.sort(function (a, b) {
+      return b.id - a.id;
+    });
+  } else if (sortTransactionsSelect.value === "oldest") {
+    sortedTransactions.sort(function (a, b) {
+      return a.id - b.id;
+    });
   }
   displayTransaction(sortedTransactions);
 }
