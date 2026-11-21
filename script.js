@@ -73,11 +73,11 @@ transactionForm.addEventListener("submit", function (event) {
   }
   addTransactionBtn.textContent = "Add Transaction";
   updateSummary();
-  transactionFilter.dispatchEvent(new Event("change"));
+  updateTransactionView();
   transactionForm.reset();
 });
 
-displayTransaction(transactionArray);
+updateTransactionView();
 updateSummary();
 
 // Display transactions
@@ -114,7 +114,7 @@ function displayTransaction(transactionArr = transactionArray) {
         addTransactionBtn.textContent = "Add Transaction";
       }
       updateSummary();
-      transactionFilter.dispatchEvent(new Event("change"));
+      updateTransactionView();
     });
 
     // Edit button
@@ -212,11 +212,11 @@ clearAllButton.addEventListener("click", function () {
     transactionForm.reset();
 
     updateSummary();
-    displayTransaction(transactionArray);
+    updateTransactionView();
   }
   addTransactionBtn.textContent = "Add Transaction";
 });
-function filterTransactions() {
+function updateTransactionView() {
   const searchInput = searchTransactions.value.toLowerCase();
   const searchedTransactions = transactionArray.filter(function (transaction) {
     if (
@@ -230,14 +230,7 @@ function filterTransactions() {
       return true;
     }
   });
-  displayTransaction(searchedTransactions);
-}
-transactionFilter.addEventListener("change", filterTransactions);
-
-searchTransactions.addEventListener("input", filterTransactions);
-
-function sortTransactions() {
-  const sortedTransactions = [...transactionArray];
+  const sortedTransactions = [...searchedTransactions];
   if (sortTransactionsSelect.value === "lowest") {
     sortedTransactions.sort(function (a, b) {
       return a.amount - b.amount;
@@ -257,4 +250,8 @@ function sortTransactions() {
   }
   displayTransaction(sortedTransactions);
 }
-sortTransactionsSelect.addEventListener("change", sortTransactions);
+transactionFilter.addEventListener("change", updateTransactionView);
+
+searchTransactions.addEventListener("input", updateTransactionView);
+
+sortTransactionsSelect.addEventListener("change", updateTransactionView);
