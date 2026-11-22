@@ -88,79 +88,9 @@ function displayTransaction(transactionArr = transactionArray) {
     emptyMessage.style.display = "none";
   }
 
-  transactionList.innerHTML = "";
-
-  transactionArr.forEach(function (transaction) {
-    // Delete button
-    const delBtn = document.createElement("button");
-    delBtn.textContent = "Delete";
-    delBtn.dataset.id = transaction.id;
-
-    delBtn.addEventListener("click", function (event) {
-      const eventDelTarget = Number(event.target.dataset.id);
-
-      const targetDelIndex = transactionArray.findIndex(function (target) {
-        return target.id === eventDelTarget;
-      });
-
-      if (targetDelIndex === -1) {
-        return;
-      }
-
-      transactionArray.splice(targetDelIndex, 1);
-      if (editingTransactionId === eventDelTarget) {
-        editingTransactionId = null;
-        transactionForm.reset();
-        addTransactionBtn.textContent = "Add Transaction";
-      }
-      updateSummary();
-      updateTransactionView();
-    });
-
-    // Edit button
-    const editBtn = document.createElement("button");
-    editBtn.textContent = "Edit";
-    editBtn.dataset.id = transaction.id;
-
-    editBtn.addEventListener("click", function (event) {
-      editingTransactionId = Number(event.target.dataset.id);
-
-      const targetEditIndex = transactionArray.findIndex(function (target) {
-        return target.id === editingTransactionId;
-      });
-
-      if (targetEditIndex === -1) {
-        editingTransactionId = null;
-        addTransactionBtn.textContent = "Add Transaction";
-        return;
-      }
-
-      const editTransaction = transactionArray[targetEditIndex];
-
-      descriptionInput.value = editTransaction.description;
-      amountInput.value = editTransaction.amount;
-      transactionType.value = editTransaction.type;
-      category.value = editTransaction.category;
-      addTransactionBtn.textContent = "Edit Transaction";
-    });
+ 
 
     // Transaction history
-    const list = document.createElement("p");
-
-    list.classList.add("transaction-list");
-    list.classList.add("transaction-history-card");
-
-    list.textContent = `Description: ${transaction.description}
-Amount: ${transaction.amount}
-Transaction type: ${transaction.type}
-Category: ${transaction.category}
-Id: ${transaction.id}`;
-
-    list.appendChild(delBtn);
-    list.appendChild(editBtn);
-
-    transactionList.classList.add("transaction-list");
-    transactionList.appendChild(list);
   });
 }
 
@@ -237,3 +167,77 @@ transactionFilter.addEventListener("change", updateTransactionView);
 searchTransactions.addEventListener("input", updateTransactionView);
 
 sortTransactionsSelect.addEventListener("change", updateTransactionView);
+function createCards() {
+   transactionList.innerHTML = "";
+  for(transaction of transactionArray){
+    
+    // Delete button
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "Delete";
+    delBtn.dataset.id = transaction.id;
+
+    delBtn.addEventListener("click", function (event) {
+      const eventDelTarget = Number(event.target.dataset.id);
+
+      const targetDelIndex = transactionArray.findIndex(function (target) {
+        return target.id === eventDelTarget;
+      });
+
+      if (targetDelIndex === -1) {
+        return;
+      }
+
+      transactionArray.splice(targetDelIndex, 1);
+      if (editingTransactionId === eventDelTarget) {
+        editingTransactionId = null;
+        transactionForm.reset();
+        addTransactionBtn.textContent = "Add Transaction";
+      }
+      updateSummary();
+      updateTransactionView();
+    });
+
+    // Edit button
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "Edit";
+    editBtn.dataset.id = transaction.id;
+
+    editBtn.addEventListener("click", function (event) {
+      editingTransactionId = Number(event.target.dataset.id);
+
+      const targetEditIndex = transactionArray.findIndex(function (target) {
+        return target.id === editingTransactionId;
+      });
+
+      if (targetEditIndex === -1) {
+        editingTransactionId = null;
+        addTransactionBtn.textContent = "Add Transaction";
+        return;
+      }
+
+      const editTransaction = transactionArray[targetEditIndex];
+
+      descriptionInput.value = editTransaction.description;
+      amountInput.value = editTransaction.amount;
+      transactionType.value = editTransaction.type;
+      category.value = editTransaction.category;
+      addTransactionBtn.textContent = "Edit Transaction";
+    });
+  const list = document.createElement("p");
+
+    list.classList.add("transaction-list");
+    list.classList.add("transaction-history-card");
+
+    list.textContent = `Description: ${transaction.description}
+Amount: ${transaction.amount}
+Transaction type: ${transaction.type}
+Category: ${transaction.category}
+Id: ${transaction.id}`;
+
+    list.appendChild(delBtn);
+    list.appendChild(editBtn);
+
+    transactionList.classList.add("transaction-list");
+    transactionList.appendChild(list);
+  }
+}
