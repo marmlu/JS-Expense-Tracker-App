@@ -166,34 +166,16 @@ Id: ${transaction.id}`;
 
 // Update dashboard summary
 function updateSummary() {
-  const transactionIncomeArray = transactionArray.filter(
-    function (transaction) {
-      return transaction.type === "income";
-    },
-  );
-
-  const transactionExpenseArray = transactionArray.filter(
-    function (transaction) {
-      return transaction.type === "expense";
-    },
-  );
-
-  const totalIncomeAmount = transactionIncomeArray.reduce(function (
-    sum,
-    transaction,
-  ) {
-    return sum + transaction.amount;
-  }, 0);
-
+  let totalIncomeAmount = 0;
+  let totalExpenseAmount = 0;
+  for (const transaction of transactionArray) {
+    if (transaction.type === "income") {
+      totalIncomeAmount += transaction.amount;
+    } else if (transaction.type === "expense") {
+      totalExpenseAmount += transaction.amount;
+    }
+  }
   totalIncome.textContent = totalIncomeAmount;
-
-  const totalExpenseAmount = transactionExpenseArray.reduce(function (
-    sum,
-    transaction,
-  ) {
-    return sum + transaction.amount;
-  }, 0);
-
   totalExpenses.textContent = totalExpenseAmount;
 
   totalBalance.textContent = totalIncomeAmount - totalExpenseAmount;
