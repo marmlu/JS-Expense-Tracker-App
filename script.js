@@ -13,8 +13,17 @@ const clearAllButton = document.getElementById("clear-history-btn");
 const transactionFilter = document.getElementById("transaction-filter");
 const searchTransactions = document.getElementById("search-transactions");
 const sortTransactionsSelect = document.getElementById("sort-transactions");
-
-const savedTransaction = JSON.parse(localStorage.getItem("transactions"));
+let savedTransaction;
+try {
+  savedTransaction = JSON.parse(localStorage.getItem("transactions"));
+  if (Array.isArray(savedTransaction)) {
+    savedTransaction;
+  } else {
+    savedTransaction = [];
+  }
+} catch {
+  savedTransaction = [];
+}
 const transactionArray = savedTransaction || [];
 
 let editingTransactionId = null;
@@ -82,18 +91,19 @@ updateSummary();
 
 // Display transactions
 function displayTransaction(transactionArr = transactionArray) {
+  transactionList.innerHTML = "";
   if (transactionArr.length === 0) {
     emptyMessage.style.display = "block";
   } else {
     emptyMessage.style.display = "none";
   }
+  transactionList.classList.add("transaction-list");
+  for (const singleTransaction of transactionArr) {
+    const singleCard = createCards(singleTransaction);
 
- 
-
-    // Transaction history
-  });
+    transactionList.appendChild(singleCard);
+  }
 }
-
 // Update dashboard summary
 function updateSummary() {
   let totalIncomeAmount = 0;
@@ -167,77 +177,70 @@ transactionFilter.addEventListener("change", updateTransactionView);
 searchTransactions.addEventListener("input", updateTransactionView);
 
 sortTransactionsSelect.addEventListener("change", updateTransactionView);
-function createCards() {
-   transactionList.innerHTML = "";
-  for(transaction of transactionArray){
-    
-    // Delete button
-    const delBtn = document.createElement("button");
-    delBtn.textContent = "Delete";
-    delBtn.dataset.id = transaction.id;
+function createCards(transaction) {
+  // Delete button
+  const delBtn = document.createElement("button");
+  delBtn.textContent = "Delete";
+  delBtn.dataset.id = transaction.id;
 
-    delBtn.addEventListener("click", function (event) {
-      const eventDelTarget = Number(event.target.dataset.id);
+  delBtn.addEventListener("click", function (event) {
+    const eventDelTarget = Number(event.target.dataset.id);
 
-      const targetDelIndex = transactionArray.findIndex(function (target) {
-        return target.id === eventDelTarget;
-      });
-
-      if (targetDelIndex === -1) {
-        return;
-      }
-
-      transactionArray.splice(targetDelIndex, 1);
-      if (editingTransactionId === eventDelTarget) {
-        editingTransactionId = null;
-        transactionForm.reset();
-        addTransactionBtn.textContent = "Add Transaction";
-      }
-      updateSummary();
-      updateTransactionView();
+    const targetDelIndex = transactionArray.findIndex(function (target) {
+      return target.id === eventDelTarget;
     });
 
-    // Edit button
-    const editBtn = document.createElement("button");
-    editBtn.textContent = "Edit";
-    editBtn.dataset.id = transaction.id;
+    if (targetDelIndex === -1) {
+      return;
+    }
 
-    editBtn.addEventListener("click", function (event) {
-      editingTransactionId = Number(event.target.dataset.id);
+    transactionArray.splice(targetDelIndex, 1);
+    if (editingTransactionId === eventDelTarget) {
+      editingTransactionId = null;
+      transactionForm.reset();
+      addTransactionBtn.textContent = "Add Transaction";
+    }
+    updateSummary();
+    updateTransactionView();
+  });
 
-      const targetEditIndex = transactionArray.findIndex(function (target) {
-        return target.id === editingTransactionId;
-      });
+  // Edit button
+  const editBtn = document.createElement("button");
+  editBtn.textContent = "Edit";
+  editBtn.dataset.id = transaction.id;
 
-      if (targetEditIndex === -1) {
-        editingTransactionId = null;
-        addTransactionBtn.textContent = "Add Transaction";
-        return;
-      }
+  editBtn.addEventListener("click", function (event) {
+    editingTransactionId = Number(event.target.dataset.id);
 
-      const editTransaction = transactionArray[targetEditIndex];
-
-      descriptionInput.value = editTransaction.description;
-      amountInput.value = editTransaction.amount;
-      transactionType.value = editTransaction.type;
-      category.value = editTransaction.category;
-      addTransactionBtn.textContent = "Edit Transaction";
+    const targetEditIndex = transactionArray.findIndex(function (target) {
+      return target.id === editingTransactionId;
     });
+
+    if (targetEditIndex === -1) {
+      editingTransactionId = null;
+      addTransactionBtn.textContent = "Add Transaction";
+      return;
+    }
+
+    const editTransaction = transactionArray[targetEditIndex];
+
+    descriptionInput.value = editTransaction.description;
+    amountInput.value = editTransaction.amount;
+    transactionType.value = editTransaction.type;
+    category.value = editTransaction.category;
+    addTransactionBtn.textContent = "Edit Transaction";
+  });
   const list = document.createElement("p");
+  list.classList.add("transaction-list");
+  list.classList.add("transaction-history-card");
 
-    list.classList.add("transaction-list");
-    list.classList.add("transaction-history-card");
-
-    list.textContent = `Description: ${transaction.description}
+  list.textContent = `Description: ${transaction.description}
 Amount: ${transaction.amount}
 Transaction type: ${transaction.type}
 Category: ${transaction.category}
 Id: ${transaction.id}`;
 
-    list.appendChild(delBtn);
-    list.appendChild(editBtn);
-
-    transactionList.classList.add("transaction-list");
-    transactionList.appendChild(list);
-  }
+  list.appendChild(delBtn);
+  list.appendChild(editBtn);
+  return list;
 }
