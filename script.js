@@ -16,9 +16,7 @@ const sortTransactionsSelect = document.getElementById("sort-transactions");
 let savedTransaction;
 try {
   savedTransaction = JSON.parse(localStorage.getItem("transactions"));
-  if (Array.isArray(savedTransaction)) {
-    savedTransaction;
-  } else {
+  if (!Array.isArray(savedTransaction)) {
     savedTransaction = [];
   }
 } catch {
